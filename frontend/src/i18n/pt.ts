@@ -128,6 +128,8 @@ const pt: typeof en = {
   },
   appearance: {
     title: 'Aparência',
+    theme: 'Tema',
+    themes: { standard: 'Padrão', spectrum: 'Espectro' },
     scheme: 'Esquema de cores',
     schemes: { system: 'Sistema', light: 'Claro', dark: 'Escuro' },
     contrast: 'Modo de contraste',

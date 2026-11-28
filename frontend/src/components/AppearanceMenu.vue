@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
 
-import { glassColors, useAppearanceStore, type Contrast, type Scheme } from '../stores/appearance'
+import { glassColors, themeVariants, useAppearanceStore, type Contrast, type Scheme } from '../stores/appearance'
 import { t } from '../i18n'
 
 const appearance = useAppearanceStore()
@@ -13,6 +13,9 @@ const schemes: Scheme[] = ['system', 'light', 'dark']
 const contrasts: Contrast[] = ['system', 'default', 'high', 'glass']
 
 const icon = computed(() => {
+  if (appearance.variant === 'spectrum') {
+    return 'fa-moon'
+  }
   if (appearance.scheme === 'system') {
     return 'fa-circle-half-stroke'
   }
@@ -31,37 +34,46 @@ const icon = computed(() => {
     </template>
     <v-card class="appearance-menu">
       <section>
-        <h2 id="scheme-title">{{ t('appearance.scheme') }}</h2>
-        <v-btn-toggle v-model="appearance.scheme" mandatory divided variant="outlined" aria-labelledby="scheme-title">
-          <v-btn v-for="item in schemes" :key="item" :value="item">{{ t(`appearance.schemes.${item}`) }}</v-btn>
+        <h2 id="theme-title">{{ t('appearance.theme') }}</h2>
+        <v-btn-toggle v-model="appearance.variant" mandatory divided variant="outlined" aria-labelledby="theme-title">
+          <v-btn v-for="item in themeVariants" :key="item" :value="item">{{ t(`appearance.themes.${item}`) }}</v-btn>
         </v-btn-toggle>
       </section>
-      <v-divider />
-      <section>
-        <h2 id="contrast-title">{{ t('appearance.contrast') }}</h2>
-        <v-btn-toggle v-model="appearance.contrast" mandatory divided variant="outlined" aria-labelledby="contrast-title">
-          <v-btn v-for="item in contrasts" :key="item" :value="item">{{ t(`appearance.contrasts.${item}`) }}</v-btn>
-        </v-btn-toggle>
-      </section>
-      <template v-if="appearance.contrast === 'glass'">
+      <template v-if="appearance.variant === 'standard'">
         <v-divider />
         <section>
-          <h2 id="glass-color-title">{{ t('appearance.glassColor') }}</h2>
-          <div class="swatches" role="radiogroup" aria-labelledby="glass-color-title">
-            <button
-              v-for="item in glassColors"
-              :key="item"
-              type="button"
-              role="radio"
-              class="swatch"
-              :class="`swatch--${item}`"
-              :aria-checked="appearance.glassColor === item"
-              :aria-label="t(`appearance.glassColors.${item}`)"
-              :title="t(`appearance.glassColors.${item}`)"
-              @click="appearance.glassColor = item"
-            />
-          </div>
+          <h2 id="scheme-title">{{ t('appearance.scheme') }}</h2>
+          <v-btn-toggle v-model="appearance.scheme" mandatory divided variant="outlined" aria-labelledby="scheme-title">
+            <v-btn v-for="item in schemes" :key="item" :value="item">{{ t(`appearance.schemes.${item}`) }}</v-btn>
+          </v-btn-toggle>
         </section>
+        <v-divider />
+        <section>
+          <h2 id="contrast-title">{{ t('appearance.contrast') }}</h2>
+          <v-btn-toggle v-model="appearance.contrast" mandatory divided variant="outlined" aria-labelledby="contrast-title">
+            <v-btn v-for="item in contrasts" :key="item" :value="item">{{ t(`appearance.contrasts.${item}`) }}</v-btn>
+          </v-btn-toggle>
+        </section>
+        <template v-if="appearance.contrast === 'glass'">
+          <v-divider />
+          <section>
+            <h2 id="glass-color-title">{{ t('appearance.glassColor') }}</h2>
+            <div class="swatches" role="radiogroup" aria-labelledby="glass-color-title">
+              <button
+                v-for="item in glassColors"
+                :key="item"
+                type="button"
+                role="radio"
+                class="swatch"
+                :class="`swatch--${item}`"
+                :aria-checked="appearance.glassColor === item"
+                :aria-label="t(`appearance.glassColors.${item}`)"
+                :title="t(`appearance.glassColors.${item}`)"
+                @click="appearance.glassColor = item"
+              />
+            </div>
+          </section>
+        </template>
       </template>
     </v-card>
   </v-menu>

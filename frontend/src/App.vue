@@ -27,6 +27,7 @@ const route = useRoute()
 const router = useRouter()
 // On a phone the upload button is an icon, to leave room in the app bar.
 const { xs } = useDisplay()
+const uploadColor = computed(() => appearance.variant === 'spectrum' ? 'accent' : 'primary')
 
 watchEffect(() => theme.change(appearance.theme))
 
@@ -146,12 +147,12 @@ window.addEventListener('beforeunload', (event) => {
 
       <v-btn
         v-if="xs"
-        color="primary"
+        :color="uploadColor"
         icon="fa-upload"
         :aria-label="t('nav.upload')"
         @click="uploads.openDialog()"
       />
-      <v-btn v-else color="primary" variant="flat" prepend-icon="fa-upload" class="mr-2" @click="uploads.openDialog()">
+      <v-btn v-else :color="uploadColor" variant="flat" prepend-icon="fa-upload" class="mr-2" @click="uploads.openDialog()">
         {{ t('nav.upload') }}
       </v-btn>
       <input

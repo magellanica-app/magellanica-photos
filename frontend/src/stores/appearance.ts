@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 
-// The color scheme and contrast mode chosen in the app bar. The choice is kept
-// in this browser only: each device can follow its own system settings.
+// Appearance preferences are kept in this browser so each device can follow
+// its own system settings.
 
+export const themeVariants = ['standard', 'spectrum'] as const
+type ThemeVariant = typeof themeVariants[number]
 export type Scheme = 'system' | 'light' | 'dark'
 export type Contrast = 'system' | 'default' | 'high' | 'glass'
 // The tint of the glass background, one of the presets in patternfly.css.
@@ -21,14 +23,30 @@ function stored<T extends string>(key: string, allowed: T[]): T {
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)')
 const prefersMoreContrast = window.matchMedia('(prefers-contrast: more)')
 
-function themeName(scheme: Scheme, contrast: Contrast, systemDark: boolean, systemMore: boolean) {
+function storedVariant(): ThemeVariant {
+  const value = localStorage.getItem('themeVariant')
+  if (value === 'standard' || value === 'spectrum') {
+    return value
+  }
+  // The original Spectrum preview was a Glass tint.
+  if (localStorage.getItem('contrast') === 'glass' && localStorage.getItem('glassColor') === 'spectrum') {
+    localStorage.setItem('themeVariant', 'spectrum')
+    return 'spectrum'
+  }
+  return 'standard'
+}
+
+function themeName(variant: ThemeVariant, scheme: Scheme, contrast: Contrast, systemDark: boolean, systemMore: boolean) {
+  if (variant === 'spectrum') {
+    return variant
+  }
   const dark = scheme === 'dark' || (scheme === 'system' && systemDark)
   const high = contrast === 'high' || (contrast === 'system' && systemMore)
   return `${dark ? 'dark' : 'light'}${high ? '-hc' : ''}`
 }
 
-function applyGlass(contrast: Contrast) {
-  document.documentElement.classList.toggle('glass', contrast === 'glass')
+function applyGlass(variant: ThemeVariant, contrast: Contrast) {
+  document.documentElement.classList.toggle('glass', variant === 'standard' && contrast === 'glass')
 }
 
 function applyGlassColor(color: GlassColor) {
@@ -38,13 +56,15 @@ function applyGlassColor(color: GlassColor) {
 // The theme to start with, read before the app mounts so the page does not
 // flash in the wrong colors.
 export function initialThemeName() {
+  const variant = storedVariant()
   const contrast = stored('contrast', contrasts)
-  applyGlass(contrast)
+  applyGlass(variant, contrast)
   applyGlassColor(stored('glassColor', glassColors))
-  return themeName(stored('scheme', schemes), contrast, prefersDark.matches, prefersMoreContrast.matches)
+  return themeName(variant, stored('scheme', schemes), contrast, prefersDark.matches, prefersMoreContrast.matches)
 }
 
 export const useAppearanceStore = defineStore('appearance', () => {
+  const variant = ref(storedVariant())
   const scheme = ref(stored('scheme', schemes))
   const contrast = ref(stored('contrast', contrasts))
   const glassColor = ref(stored('glassColor', glassColors))
@@ -54,18 +74,17 @@ export const useAppearanceStore = defineStore('appearance', () => {
   prefersDark.addEventListener('change', (event) => (systemDark.value = event.matches))
   prefersMoreContrast.addEventListener('change', (event) => (systemMore.value = event.matches))
 
+  watch(variant, (value) => localStorage.setItem('themeVariant', value))
   watch(scheme, (value) => localStorage.setItem('scheme', value))
-  watch(contrast, (value) => {
-    localStorage.setItem('contrast', value)
-    applyGlass(value)
-  })
+  watch(contrast, (value) => localStorage.setItem('contrast', value))
+  watch([variant, contrast], ([currentVariant, currentContrast]) => applyGlass(currentVariant, currentContrast))
 
   watch(glassColor, (value) => {
     localStorage.setItem('glassColor', value)
     applyGlassColor(value)
   })
 
-  const theme = computed(() => themeName(scheme.value, contrast.value, systemDark.value, systemMore.value))
+  const theme = computed(() => themeName(variant.value, scheme.value, contrast.value, systemDark.value, systemMore.value))
 
-  return { scheme, contrast, glassColor, theme }
+  return { variant, scheme, contrast, glassColor, theme }
 })

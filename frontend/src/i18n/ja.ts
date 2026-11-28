@@ -128,6 +128,8 @@ const ja: typeof en = {
   },
   appearance: {
     title: '外観',
+    theme: 'テーマ',
+    themes: { standard: '標準', spectrum: 'スペクトル' },
     scheme: '配色',
     schemes: { system: 'システム', light: 'ライト', dark: 'ダーク' },
     contrast: 'コントラストモード',

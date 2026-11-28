@@ -127,6 +127,8 @@ const es: typeof en = {
   },
   appearance: {
     title: 'Apariencia',
+    theme: 'Tema',
+    themes: { standard: 'Estándar', spectrum: 'Espectro' },
     scheme: 'Esquema de colores',
     schemes: { system: 'Sistema', light: 'Claro', dark: 'Oscuro' },
     contrast: 'Modo de contraste',

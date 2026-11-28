@@ -128,6 +128,8 @@ const it: typeof en = {
   },
   appearance: {
     title: 'Aspetto',
+    theme: 'Tema',
+    themes: { standard: 'Standard', spectrum: 'Spettro' },
     scheme: 'Schema di colori',
     schemes: { system: 'Sistema', light: 'Chiaro', dark: 'Scuro' },
     contrast: 'Modalità di contrasto',

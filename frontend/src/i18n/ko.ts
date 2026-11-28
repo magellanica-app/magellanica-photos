@@ -128,6 +128,8 @@ const ko: typeof en = {
   },
   appearance: {
     title: '화면 모양',
+    theme: '테마',
+    themes: { standard: '표준', spectrum: '스펙트럼' },
     scheme: '색 구성',
     schemes: { system: '시스템', light: '밝게', dark: '어둡게' },
     contrast: '대비 모드',

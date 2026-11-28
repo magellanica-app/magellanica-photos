@@ -128,6 +128,8 @@ const fr: typeof en = {
   },
   appearance: {
     title: 'Apparence',
+    theme: 'Thème',
+    themes: { standard: 'Standard', spectrum: 'Spectre' },
     scheme: 'Jeu de couleurs',
     schemes: { system: 'Système', light: 'Clair', dark: 'Sombre' },
     contrast: 'Mode de contraste',

@@ -9,9 +9,8 @@ import { aliases, fontAwesome } from './icons'
 // The colors follow the PatternFly 6 design tokens, with fuchsia in place of
 // the PatternFly blue. Background is the page chrome around the main panel,
 // surface is the panel itself, and surface-bright is for menus and dialogs.
-// The "-hc" themes are the high contrast variants. Glass is not a theme of
-// its own: it makes the surfaces of the light and dark themes translucent
-// (see styles/patternfly.css).
+// The "-hc" themes are the high contrast variants. The standard Glass mode
+// and the Spectrum theme have separate surface styles in patternfly.css.
 
 const light: ThemeDefinition = {
   dark: false,
@@ -113,13 +112,32 @@ const darkHighContrast: ThemeDefinition = {
   },
 }
 
+const spectrum: ThemeDefinition = {
+  ...dark,
+  colors: {
+    ...dark.colors,
+    background: '#20212d',
+    surface: '#252633',
+    'surface-bright': '#38394a',
+    'surface-light': '#3b3c50',
+    primary: '#46e5f5',
+    'on-primary': '#092329',
+    accent: '#ffbf2b',
+    'on-accent': '#211707',
+    error: '#ffc0b9',
+    'on-error': '#29100f',
+    success: '#a9dc88',
+    info: '#c2c8ff',
+  },
+}
+
 // A focused field draws its outline in the accent, as PatternFly does.
 const field = { variant: 'outlined', density: 'compact', color: 'primary' } as const
 
 export const vuetify = createVuetify({
   theme: {
     defaultTheme: initialThemeName(),
-    themes: { light, dark, 'light-hc': lightHighContrast, 'dark-hc': darkHighContrast },
+    themes: { light, dark, 'light-hc': lightHighContrast, 'dark-hc': darkHighContrast, spectrum },
   },
   // Vuetify's own texts and its dates follow the interface language. Date
   // fields and calendars take the input mask, month names and first weekday

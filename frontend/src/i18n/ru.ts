@@ -128,6 +128,8 @@ const ru: typeof en = {
   },
   appearance: {
     title: 'Оформление',
+    theme: 'Тема',
+    themes: { standard: 'Стандартная', spectrum: 'Спектр' },
     scheme: 'Цветовая схема',
     schemes: { system: 'Как в системе', light: 'Светлая', dark: 'Тёмная' },
     contrast: 'Контрастность',

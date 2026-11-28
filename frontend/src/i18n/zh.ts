@@ -128,6 +128,8 @@ const zh: typeof en = {
   },
   appearance: {
     title: '外观',
+    theme: '主题',
+    themes: { standard: '标准', spectrum: '光谱' },
     scheme: '配色方案',
     schemes: { system: '跟随系统', light: '浅色', dark: '深色' },
     contrast: '对比度模式',

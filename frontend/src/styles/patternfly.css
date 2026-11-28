@@ -150,7 +150,8 @@
   }
 
   .v-theme--dark,
-  .v-theme--dark-hc {
+  .v-theme--dark-hc,
+  .v-theme--spectrum {
     --shadow-md: 0 4px 10px 0 rgba(0, 0, 0, 0.5);
     --shadow-lg: 0 10px 20px 0 rgba(0, 0, 0, 0.5);
   }
@@ -486,10 +487,9 @@
   /* Glass: the page shows a soft gradient, and the surfaces above it let it
      through with a blur. */
 
-  /* The tint is one of six presets, chosen in the appearance menu and set as
-     data-glass-color on html. Each gives the three colors of the gradient as
-     RGB channels; the default is the theme's own fuchsia over violet. They are
-     set on .v-application, where the theme's colors are defined. */
+  /* The appearance menu sets data-glass-color on html. The default gradient
+     uses the theme's fuchsia over violet. Theme colors are available on
+     .v-application. */
 
   .v-application {
     --glass-a: var(--v-theme-primary);
@@ -547,7 +547,7 @@
     background: transparent;
   }
 
-  html.glass .v-navigation-drawer .v-list-item--active {
+  html.glass .v-navigation-drawer:not(.v-navigation-drawer--temporary) .v-list-item--active {
     background: rgba(var(--v-theme-surface), 0.6);
   }
 
@@ -560,10 +560,52 @@
   }
 }
 
-/* In glass the app bar and navigation let the page gradient through. Their
-   color comes from a bg-background utility class, which only rules outside
-   the layers can override. */
+/* In glass the app bar and permanent navigation let the page gradient
+   through. Their color comes from a bg-background utility class, which only
+   rules outside the layers can override. */
 html.glass .v-app-bar,
-html.glass .v-navigation-drawer {
+html.glass .v-navigation-drawer:not(.v-navigation-drawer--temporary) {
   background: transparent !important;
+}
+
+/* Spectrum uses one continuous backdrop under the top bar, desktop
+   navigation and photo grid. The temporary phone drawer uses its theme color. */
+.v-application.v-theme--spectrum {
+  --spectrum-chrome-opacity: 0.64;
+  --spectrum-panel-opacity: 0.72;
+  --spectrum-blur: blur(16px);
+  background:
+    radial-gradient(ellipse 83% 95% at 110% 115%, #ffca30 48%, #f38c0a 69%, transparent 69.5%),
+    radial-gradient(ellipse 105% 120% at -35% -20%, #00dbe8 44%, #0066e7 70%, transparent 70.5%),
+    radial-gradient(ellipse 85% 115% at 115% -15%, #a913ed 30%, #6608d3 66%, transparent 66.5%),
+    linear-gradient(135deg, #121e81 20%, #3523a8 49%, #740eeb 80%, #a31de7);
+}
+
+.v-theme--spectrum .page-panel {
+  /* A backdrop filter here would constrain the fixed photo viewer. */
+  background: rgba(var(--v-theme-surface), var(--spectrum-panel-opacity));
+}
+
+.v-theme--spectrum .v-app-bar,
+.v-theme--spectrum .v-navigation-drawer:not(.v-navigation-drawer--temporary) {
+  background-color: rgba(var(--v-theme-background), var(--spectrum-chrome-opacity));
+  backdrop-filter: var(--spectrum-blur);
+}
+
+@layer vuetify-overrides {
+  .v-theme--spectrum .v-navigation-drawer .v-list-item--active {
+    background: rgb(var(--v-theme-surface-light));
+  }
+
+  .v-theme--spectrum .v-field--variant-outlined {
+    background: rgb(var(--v-theme-surface-light));
+  }
+}
+
+@media (prefers-contrast: more), (prefers-reduced-transparency: reduce) {
+  .v-application.v-theme--spectrum {
+    --spectrum-chrome-opacity: 1;
+    --spectrum-panel-opacity: 1;
+    --spectrum-blur: none;
+  }
 }

@@ -127,6 +127,8 @@ export default {
   },
   appearance: {
     title: 'Appearance',
+    theme: 'Theme',
+    themes: { standard: 'Standard', spectrum: 'Spectrum' },
     scheme: 'Color scheme',
     schemes: { system: 'System', light: 'Light', dark: 'Dark' },
     contrast: 'Contrast mode',

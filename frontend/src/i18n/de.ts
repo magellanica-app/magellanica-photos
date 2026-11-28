@@ -127,6 +127,8 @@ const de: typeof en = {
   },
   appearance: {
     title: 'Darstellung',
+    theme: 'Thema',
+    themes: { standard: 'Standard', spectrum: 'Spektrum' },
     scheme: 'Farbschema',
     schemes: { system: 'System', light: 'Hell', dark: 'Dunkel' },
     contrast: 'Kontrastmodus',

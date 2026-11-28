@@ -646,6 +646,35 @@ const steps = {
       throw new Error('the viewer shows the location the user hid')
     }
   },
+  'Spectrum persists and switching back restores Standard Glass': async () => {
+    await page.goto(BASE)
+    const appearance = button('Appearance')
+    await appearance.click()
+    await button('Glass').click()
+    await waitFor('Glass mode', () => document.documentElement.classList.contains('glass'))
+
+    const spectrum = () => waitFor('the independent Spectrum theme', () =>
+      document.querySelector('.v-application.v-theme--spectrum') && !document.documentElement.classList.contains('glass'))
+    await button('Spectrum').click()
+    await spectrum()
+    await page.reload()
+    await spectrum()
+
+    await page.getByTestId('tile-open').first().click()
+    await waitFor('the viewer to cover the viewport in Spectrum', () => {
+      const box = document.querySelector('[data-testid=viewer]')?.getBoundingClientRect()
+      return box && [box.left, box.top, box.right - innerWidth, box.bottom - innerHeight]
+        .every((edge) => Math.abs(edge) < 1)
+    })
+    await closeWithEscape(page.getByTestId('viewer'))
+
+    await appearance.click()
+    await button('Standard').click()
+    await waitFor('restored Glass mode', () =>
+      document.documentElement.classList.contains('glass') && !document.querySelector('.v-application.v-theme--spectrum'))
+    await page.locator('[aria-labelledby=contrast-title]').getByRole('button', { name: 'System', exact: true }).click()
+    await appearance.click()
+  },
   'on a phone the menu opens over the page': async () => {
     await page.setViewportSize({ width: 375, height: 740 })
     try {
